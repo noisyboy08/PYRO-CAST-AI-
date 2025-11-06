@@ -51,7 +51,7 @@ const About = () => {
 
   const team = [
     {
-      name: 'SATYAM PANDEY',
+      name: 'UDAY DOLAS',
       role: 'Lead',
       expertise: 'Machine Learning & Fire Weather Modeling',
       image: '/api/placeholder/150/150'
