@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Link, useLocation } from "react-router-dom"
-import { cn } from "../../lib/utils.js"
+import { cn } from "../../lib/utils"
 
 /**
  * Tubelight Navigation Bar Component
