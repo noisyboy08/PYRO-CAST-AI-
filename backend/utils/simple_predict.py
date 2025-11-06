@@ -81,9 +81,9 @@ class SimpleWildfirePredictionService:
         # Handle common field name variations
         field_mappings = {
             'temp_mean': ['temperature', 'temp'],
-            'humidity_min': ['humidity'],
+            'humidity_min': ['humidity', 'relative_humidity'],
             'wind_speed_max': ['wind_speed', 'wind'],
-            'pressure_mean': ['pressure'],
+            'pressure_mean': ['pressure', 'atmospheric_pressure'],
             'fire_weather_index': ['fwi', 'fire_weather_index']
         }
         

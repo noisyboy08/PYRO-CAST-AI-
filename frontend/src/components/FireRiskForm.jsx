@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, Loader2, Thermometer, Droplets, Wind, Gauge, Flame, CloudRain, Sun, Activity } from 'lucide-react'
+import { API_ENDPOINTS } from '../config/api'
 
 const FireRiskForm = ({ onPredictionResult }) => {
   const [formData, setFormData] = useState({
@@ -117,16 +118,16 @@ const FireRiskForm = ({ onPredictionResult }) => {
     setErrors({})
 
     try {
-      const response = await fetch('http://localhost:5000/predict', {
+      const response = await fetch(API_ENDPOINTS.PREDICT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           temperature: parseFloat(formData.temperature),
-          relative_humidity: parseFloat(formData.relative_humidity),
+          humidity: parseFloat(formData.relative_humidity),
           wind_speed: parseFloat(formData.wind_speed),
-          atmospheric_pressure: parseFloat(formData.atmospheric_pressure),
+          pressure: parseFloat(formData.atmospheric_pressure),
           fire_weather_index: parseFloat(formData.fire_weather_index)
         }),
       })
@@ -209,18 +210,18 @@ const FireRiskForm = ({ onPredictionResult }) => {
                   className={`input-field pr-12 ${errors[field.name] ? 'input-error' : ''}`}
                   disabled={isLoading}
                 />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-sm font-medium">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-sm font-semibold">
                   {field.suffix}
                 </div>
               </div>
               
               {errors[field.name] && (
-                <p className="text-sm text-destructive mt-1">
+                <p className="error-message">
                   {errors[field.name]}
                 </p>
               )}
               
-              <p className="text-xs text-muted">
+              <p className="text-sm text-secondary">
                 {field.description}
               </p>
             </motion.div>
@@ -262,10 +263,10 @@ const FireRiskForm = ({ onPredictionResult }) => {
         >
           <CloudRain className="w-5 h-5 text-primary flex-shrink-0" />
           <div>
-            <p className="font-medium text-foreground mb-1">
+            <p className="font-semibold text-primary mb-1">
               Professional Weather Data Required
             </p>
-            <p className="text-sm text-muted">
+            <p className="text-sm text-secondary">
               For optimal accuracy, input current meteorological measurements from certified weather stations. 
               Sample data is provided for demonstration purposes only.
             </p>

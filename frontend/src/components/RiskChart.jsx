@@ -4,6 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Area, AreaChart, RadialBarChart, RadialBar 
 } from 'recharts'
+import { API_ENDPOINTS } from '../config/api'
 
 const RiskChart = ({ predictionData, historicalData = [] }) => {
   const [realData, setRealData] = useState(null)
@@ -22,10 +23,10 @@ const RiskChart = ({ predictionData, historicalData = [] }) => {
       
       // Fetch multiple data sources in parallel
       const [trendsRes, correlationsRes, riskDistRes, outliersRes] = await Promise.all([
-        fetch('http://localhost:5000/api/historical-trends'),
-        fetch('http://localhost:5000/api/correlations'),
-        fetch('http://localhost:5000/api/risk-distribution'),
-        fetch('http://localhost:5000/api/outlier-analysis')
+        fetch(API_ENDPOINTS.HISTORICAL_TRENDS),
+        fetch(API_ENDPOINTS.CORRELATIONS),
+        fetch(API_ENDPOINTS.RISK_DISTRIBUTION),
+        fetch(API_ENDPOINTS.OUTLIER_ANALYSIS)
       ])
 
       const trends = await trendsRes.json()

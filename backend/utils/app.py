@@ -73,11 +73,13 @@ if FLASK_AVAILABLE:
     @app.route('/health', methods=['GET'])
     def health_check():
         """Health check endpoint"""
+        if prediction_service is None:
+            return jsonify({"error": "Prediction service not available"}), 500
         return jsonify({
             "status": "healthy",
             "message": "Wildfire Risk Prediction API is running",
             "version": "1.0.0",
-            "model_info": predictor.get_model_info()
+            "model_info": prediction_service.get_model_info()
         })
 
     @app.route('/predict', methods=['POST'])
@@ -92,15 +94,37 @@ if FLASK_AVAILABLE:
             if not data:
                 return jsonify({"error": "No data provided"}), 400
             
+            # Normalize field names for the prediction service
+            normalized_data = {}
+            # Map frontend field names to backend expected names
+            field_mapping = {
+                'temperature': 'temperature',
+                'temp_mean': 'temp_mean',
+                'relative_humidity': 'humidity',
+                'humidity': 'humidity',
+                'humidity_min': 'humidity_min',
+                'wind_speed': 'wind_speed',
+                'wind_speed_max': 'wind_speed_max',
+                'atmospheric_pressure': 'pressure',
+                'pressure': 'pressure',
+                'pressure_mean': 'pressure_mean',
+                'fire_weather_index': 'fire_weather_index'
+            }
+            
+            for frontend_key, backend_key in field_mapping.items():
+                if frontend_key in data:
+                    normalized_data[backend_key] = data[frontend_key]
+            
             # Validate that at least some data is provided
-            required_any = ['temperature', 'temp_mean', 'humidity', 'humidity_min', 'wind_speed', 'wind_speed_max']
-            if not any(field in data for field in required_any):
+            if not normalized_data:
                 return jsonify({
                     "error": "Please provide at least temperature, humidity, and wind speed data"
                 }), 400
             
             # Make prediction
-            prediction_result = predictor.predict(data)
+            if prediction_service is None:
+                return jsonify({"error": "Prediction service not available"}), 500
+            prediction_result = prediction_service.predict(normalized_data)
             
             return jsonify(prediction_result)
             
@@ -127,7 +151,15 @@ if FLASK_AVAILABLE:
             
             for i, data_point in enumerate(data_list):
                 try:
-                    result = predictor.predict(data_point)
+                    if prediction_service is None:
+                        predictions.append({
+                            'index': i,
+                            'error': 'Prediction service not available',
+                            'fire_risk': 'Unknown',
+                            'probability': None
+                        })
+                        continue
+                    result = prediction_service.predict(data_point)
                     result['index'] = i
                     predictions.append(result)
                 except Exception as e:
@@ -151,7 +183,9 @@ if FLASK_AVAILABLE:
     def model_info():
         """Get information about the current model"""
         try:
-            info = predictor.get_model_info()
+            if prediction_service is None:
+                return jsonify({"error": "Prediction service not available"}), 500
+            info = prediction_service.get_model_info()
             return jsonify(info)
         except Exception as e:
             logger.error(f"Model info error: {str(e)}")
@@ -235,7 +269,9 @@ if FLASK_AVAILABLE:
                 geo_data = data_service.get_geographical_data(sample_size)
                 return jsonify({
                     "success": True,
-                    "data": geo_data,
+                    "data": {
+                        "locations": geo_data
+                    },
                     "count": len(geo_data),
                     "source": "real_data"
                 })
@@ -255,7 +291,9 @@ if FLASK_AVAILABLE:
                     })
                 return jsonify({
                     "success": True,
-                    "data": mock_data,
+                    "data": {
+                        "locations": mock_data
+                    },
                     "count": len(mock_data),
                     "source": "mock_data"
                 })

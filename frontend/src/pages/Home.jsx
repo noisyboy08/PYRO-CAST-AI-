@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Flame, Target, TrendingUp, Shield, Zap, Globe, CheckCircle, AlertCircle } from 'lucide-react'
+import { Hero } from '../components/ui/Hero'
 
 const Home = () => {
   const features = [
@@ -55,56 +56,8 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="flex justify-center mb-8">
-              <div className="icon-container icon-warning" style={{ width: '5rem', height: '5rem' }}>
-                <Flame className="w-10 h-10" />
-              </div>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="text-gradient">Pyro Cast AI</span>
-              <br />
-              <span className="text-primary">Prediction System</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-muted mb-12 max-w-4xl mx-auto leading-relaxed">
-              Harness the power of artificial intelligence to predict fire risks with Pyro Cast AI's advanced analytics. 
-              Protect communities through advanced machine learning and real-time environmental analysis.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/predict">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="btn btn-primary btn-lg"
-                >
-                  <Zap className="w-5 h-5" />
-                  <span>Start Prediction</span>
-                </motion.button>
-              </Link>
-              
-              <Link to="/about">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="btn btn-outline btn-lg"
-                >
-                  Learn More
-                </motion.button>
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* Hero Section with Canvas Animation */}
+      <Hero />
 
       {/* Stats Section */}
       <section className="section">

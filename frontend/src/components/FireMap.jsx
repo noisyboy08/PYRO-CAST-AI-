@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet'
 import { motion } from 'framer-motion'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { API_ENDPOINTS } from '../config/api'
 
 // Fix for default markers in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl
@@ -28,8 +29,8 @@ const FireMap = () => {
       
       // Fetch real geographical data and dataset stats
       const [geoRes, statsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/geographical-data'),
-        fetch('http://localhost:5000/api/dataset-stats')
+        fetch(API_ENDPOINTS.GEOGRAPHICAL_DATA),
+        fetch(API_ENDPOINTS.DATASET_STATS)
       ])
 
       const geographicalData = await geoRes.json()
@@ -41,11 +42,11 @@ const FireMap = () => {
         // Convert geographical data to map points with real data
         const mapPoints = geographicalData.data.locations?.slice(0, 15).map((location, index) => ({
           id: index + 1,
-          lat: location.latitude,
-          lon: location.longitude,
+          lat: location.lat || location.latitude,
+          lon: location.lon || location.longitude,
           location: `Fire Point ${index + 1}`,
-          riskLevel: location.risk_level || getRiskLevelFromCoordinates(location.latitude, location.longitude),
-          probability: location.fire_probability || Math.random() * 0.7 + 0.2,
+          riskLevel: location.risk_level || (location.fire_occurred ? 'High' : 'Low') || getRiskLevelFromCoordinates(location.lat || location.latitude, location.lon || location.longitude),
+          probability: location.fire_probability || (location.fire_occurred ? 0.7 : 0.3) || Math.random() * 0.7 + 0.2,
           temperature: location.temperature || (25 + Math.random() * 20),
           humidity: location.humidity || (20 + Math.random() * 60),
           windSpeed: location.wind_speed || (5 + Math.random() * 25),
