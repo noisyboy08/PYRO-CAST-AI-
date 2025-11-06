@@ -1,8 +1,10 @@
 // API Configuration
-// Uses proxy in development, absolute URLs in production
-const API_BASE_URL = import.meta.env.DEV 
-  ? ''  // Use proxy in development (vite.config.js handles this)
-  : 'http://localhost:5000'  // Absolute URL for production
+// - In development: use Vite proxy (empty base URL)
+// - In production: read the public env var VITE_API_BASE_URL set in Netlify
+//   Example: https://your-backend-host.example.com
+const API_BASE_URL = import.meta.env.DEV
+  ? ''
+  : (import.meta.env.VITE_API_BASE_URL || '')
 
 export const API_ENDPOINTS = {
   PREDICT: `${API_BASE_URL}/predict`,
