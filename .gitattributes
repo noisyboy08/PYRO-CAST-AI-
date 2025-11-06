@@ -1,0 +1,5 @@
+﻿# Don’t include notebooks in language stats
+*.ipynb linguist-detectable=false
+
+# De-emphasize generated build output
+frontend/dist/** linguist-generated=true
