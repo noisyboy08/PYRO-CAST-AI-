@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Link, useLocation } from "react-router-dom"
-import { cn } from "@/lib/utils.js"
+import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+const cn = (...inputs) => twMerge(clsx(inputs))
 
 /**
  * Tubelight Navigation Bar Component
